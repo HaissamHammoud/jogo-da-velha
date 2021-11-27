@@ -8,8 +8,9 @@ informações e ações para o servidor
 import tkinter as tk
 import socket
 import time
-player = "x"
 
+player = "x"
+sua_vez = True
 
 class Application:
 
@@ -63,10 +64,17 @@ class Application:
             actual_button["text"] = player
             self.status["text"] = "vez do outro"
             mensagem = row+column
-            socketCliente.send("{}".format(mensagem).encode())
             while True:
                 print("aguardando")
                 time.sleep(1)
+            # quando coloquei esse shile aqui ele deu problema na parte de cima 
+            # Pensei em botar ele aqui...
+            # seguindo esses passos.. dai uma vez que o servidor retorna algo a gente da um break; ou um continue..
+            # dai temos que fazer alguns codigos de retorno do servidor tipo
+            # 1 - sua vez
+            # 2 - você perdeu
+            # 3 - você ganhou
+            # 4 - 
             # Enviar dados para o servidor
             # receber resposta do servidor
             # aguardar proxima resposta do servidor
