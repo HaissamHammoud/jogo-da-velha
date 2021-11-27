@@ -8,9 +8,21 @@ informações e ações para o servidor
 import tkinter as tk
 import socket
 import time
-
+from tkinter import font as tkFont
 player = "x"
 sua_vez = True
+REI_BRANCO = "\u2654"
+DAMA_BRANCA = "\u2655"
+TORRE_BRANCA = "\u2656"
+BISPO_BRANCO = "\u2657"
+CAVALO_BRANCO = "\u2658"
+PEAO_BRANCO = "\u2659"
+REI_PRETO = "\u265A"
+DAMA_PRETA = "\u265B"
+TORRE_PRETA = "\u265C"
+BISPO_PRETO = "\u265D"
+CAVALO_PRETO = "\u265E"
+PEAO_PRETO = "\u265F"
 
 class Application:
 
@@ -24,10 +36,10 @@ class Application:
             self.buttons.append([])
             self.color = "gray" if self.color == "white" else "white"
             for j in range(8):
-                self.buttons[i].append(tk.Button(self.frame, fg = "black", width = 5, height = 5, bd = 0, bg = self.get_collor(), cursor = "hand2", name=(str(i)+(str(j)))))
+                self.buttons[i].append(tk.Button(self.frame, fg = "black", width = 3, height = 3, bd = 0, bg = self.get_collor(), cursor = "hand2", name=(str(i)+(str(j)))))
                 self.buttons[i][j]["command"] = lambda pl = player, ab = self.buttons[i][j]: self.press_button(pl,ab)
                 self.buttons[i][j]["text"] = ""#str(i+j)
-                self.buttons[i][j].grid(row = i, column = j, columnspan = 1, padx = 1, pady = 1)
+                self.buttons[i][j].grid(row = i, column = j)
                 print(f"{self.buttons[-1]}")
         # self.info_frame = tk.Frame(self.frame, width = 100000, height = 100000, bg = "grey")
         # self.info_frame.pack()
@@ -51,19 +63,27 @@ class Application:
     # def send_to_server(self, message):
     #     socketCliente.send("{}".format(mensagem).encode())
     def put_pieces(self):
-        traz = ["T","B","\u265E","\u2654","\u2655","\u265E","B","T "]
+        traz_preto = [TORRE_PRETA,BISPO_PRETO,CAVALO_PRETO,REI_PRETO,DAMA_PRETA,CAVALO_PRETO,BISPO_PRETO,TORRE_PRETA]
+        traz_branco = [TORRE_BRANCA,BISPO_BRANCO,CAVALO_BRANCO,REI_BRANCO,DAMA_BRANCA,CAVALO_BRANCO,BISPO_BRANCO,TORRE_BRANCA]
+
         for i in range(8):
-            self.buttons[0][i].config(font=100)
-            self.buttons[0][i]["text"] = traz[i]
+            helv36 = tkFont.Font(family='Helvetica', size=20, weight=tkFont.BOLD)
+            self.buttons[0][i].config(font = helv36)
+            self.buttons[1][i].config(font = helv36)
+            self.buttons[2][i].config(font = helv36)
+            self.buttons[3][i].config(font = helv36)
+            self.buttons[4][i].config(font = helv36)
+            self.buttons[5][i].config(font = helv36)
+            self.buttons[6][i].config(font = helv36)
+            self.buttons[7][i].config(font = helv36)
+            self.buttons[0][i]["text"] = traz_preto[i]
             print(f"{self.buttons[0][i]}")
-            self.buttons[1][i]["text"] = "P"
+            self.buttons[1][i]["text"] = PEAO_PRETO
             print(f"{self.buttons[1][i]}")
 
-            self.buttons[7][i]["text"] = traz[i]
-            self.buttons[7][i]["fg"]= "yellow"
+            self.buttons[7][i]["text"] = traz_branco[i]
             print(f"{self.buttons[0][i]}")
-            self.buttons[6][i]["text"] = "P"
-            self.buttons[6][i]["fg"]= "yellow"
+            self.buttons[6][i]["text"] = PEAO_BRANCO
             print(f"{self.buttons[1][i]}")
 
 
