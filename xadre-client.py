@@ -28,6 +28,7 @@ class Application:
 
     def __init__(self, master=None):
         self.color = "white"
+        self.SELECTED_PIECE = tk.Button()
         self.frame = tk.Frame(master)
         self.frame.pack()
 
@@ -40,28 +41,25 @@ class Application:
                 self.buttons[i][j]["command"] = lambda pl = player, ab = self.buttons[i][j]: self.press_button(pl,ab)
                 self.buttons[i][j]["text"] = ""#str(i+j)
                 self.buttons[i][j].grid(row = i, column = j)
-                print(f"{self.buttons[-1]}")
-        # self.info_frame = tk.Frame(self.frame, width = 100000, height = 100000, bg = "grey")
-        # self.info_frame.pack()
-        # self.status = tk.Message(self.info_frame, width = 1000)
-        # self.status["text"] = "sua vez"
-        # self.status.pack()
+                
         self.put_pieces()
+
     def press_button(self, player, actual_button):
         row = actual_button.grid_info()["row"]
         column = actual_button.grid_info()["column"]
-        print(f"Row:{row}   column: {column}")
-        if actual_button["text"] == "-":
-            actual_button["text"] = player
-            self.status["text"] = "vez do outro"
-            mensagem = row+column
-            while True:
-                print("aguardando")
-                time.sleep(1)
+        if self.SELECTED_PIECE["text"] == "":
+            self.SELECTED_PIECE = actual_button
+            return
+        if self.SELECTED_PIECE["text"] != "" and actual_button != "" :
+            actual_button["text"] = self.SELECTED_PIECE["text"]
+            self.SELECTED_PIECE["text"] = ""
+            return   
+
+    def move_pieces(self, actual_position, next_position):
+        next_position["text"] = actual_position["text"]
+        actual_position["text"] = ""
 
 
-    # def send_to_server(self, message):
-    #     socketCliente.send("{}".format(mensagem).encode())
     def put_pieces(self):
         traz_preto = [TORRE_PRETA,BISPO_PRETO,CAVALO_PRETO,REI_PRETO,DAMA_PRETA,CAVALO_PRETO,BISPO_PRETO,TORRE_PRETA]
         traz_branco = [TORRE_BRANCA,BISPO_BRANCO,CAVALO_BRANCO,REI_BRANCO,DAMA_BRANCA,CAVALO_BRANCO,BISPO_BRANCO,TORRE_BRANCA]
