@@ -23,7 +23,7 @@ TORRE_PRETA = "\u265C"
 BISPO_PRETO = "\u265D"
 CAVALO_PRETO = "\u265E"
 PEAO_PRETO = "\u265F"
-
+PECAS_BRANCAS = [REI_BRANCO,DAMA_BRANCA,TORRE_BRANCA,BISPO_BRANCO,CAVALO_BRANCO,PEAO_BRANCO]
 class Application:
 
     def __init__(self, master=None):
@@ -31,6 +31,7 @@ class Application:
         self.SELECTED_PIECE = tk.Button()
         self.frame = tk.Frame(master)
         self.frame.pack()
+        self.YOUR_COLLOR = "white"
 
         self.buttons = []
         for i in range(8):
@@ -47,7 +48,7 @@ class Application:
     def press_button(self, player, actual_button):
         row = actual_button.grid_info()["row"]
         column = actual_button.grid_info()["column"]
-        if self.SELECTED_PIECE["text"] == "":
+        if self.SELECTED_PIECE["text"] == "" and actual_button["text"] in PECAS_BRANCAS :
             self.SELECTED_PIECE = actual_button
             return
         if self.SELECTED_PIECE["text"] != "" and actual_button != "" :
