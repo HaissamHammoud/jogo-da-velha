@@ -255,7 +255,7 @@ def getMove(play: str):
     message = howToPlay()
   return 'invalid', 'invalid', message, False
 
-def turn(matrix: 'list[list[int]]', pieces: 'list[int]', play: str, client: bool = False):
+def turn(matrix: 'list[list[int]]', myPieces: 'list[int]', opponentPieces: 'list[int]', play: str, client: bool = False):
   source, destination, message, valid = getMove(play)
   if not valid:
     return matrix, message, False
@@ -263,7 +263,7 @@ def turn(matrix: 'list[list[int]]', pieces: 'list[int]', play: str, client: bool
   piece = matrix[sourceRow][sourceCollumn]
   if piece != 0:
     destinationRow, destinationCollumn = getCoordinates(destination)
-    if validateOwnership(piece, pieces):
+    if validateOwnership(piece, myPieces):
       if validateMove(
         piece,
         [sourceRow, sourceCollumn],
@@ -274,14 +274,16 @@ def turn(matrix: 'list[list[int]]', pieces: 'list[int]', play: str, client: bool
           matrix,
           [sourceRow, sourceCollumn],
           [destinationRow, destinationCollumn],
-          pieces,
+          myPieces,
           piece,
           client
         )
         if message != True:
           return matrix, str(message), False
+        opponentPieces.remove(matrix[sourceRow][sourceCollumn])
         matrix[sourceRow][sourceCollumn] = 0
         matrix[destinationRow][destinationCollumn] = piece
+        
         return matrix, str(message), True
       else:
         message = "Você não pode mover essa peça ali!"
@@ -539,10 +541,10 @@ def validatePath(
   return "error"
 
 def theKingIsDead(clientPieces: 'list[int]', serverPieces: 'list[int]'):
-  if WHITE_KNIGHT in clientPieces or BLACK_KING in clientPieces:
-    return "client"
-  if WHITE_KNIGHT in serverPieces or BLACK_KING in serverPieces:
+  if not (WHITE_KNIGHT in clientPieces) and not (BLACK_KING in clientPieces):
     return "server"
+  if not (WHITE_KNIGHT in serverPieces) and not (BLACK_KING in serverPieces):
+    return "client"
   return False
 
 def promotion():
