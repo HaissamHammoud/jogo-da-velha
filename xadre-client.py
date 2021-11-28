@@ -77,11 +77,29 @@ class Application:
             recieve = connection.recv(2)
             if recieve.decode() == "ok":
                 actual_button["text"] = self.SELECTED_PIECE["text"]
-                self.SELECTED_PIECE["text"] = ""
+                # self.SELECTED_PIECE["text"] = ""                
+                self.move_pieces(self.SELECTED_PIECE, actual_button)
+
+                # self.move_pieces(self.SELECTED_PIECE, actual_button)
+                # connection.send("oi".encode())
+
+                response = connection.recv(1)
+                print(response.decode())
+                # self.your_turn = False
+                response = connection.recv(5)
+                self.move_pieces_enemy(response.decode())
+                self.your_turn = True
             else:
                 print("invalid movement")
             # self.your_turn = not(self.your_turn)
             return   
+
+    
+    def move_pieces_enemy(self, path):
+        from_place = self.buttons[int(path[0])][int(path[1])]
+        to_place = self.buttons[int(path[3])][int(path[4])]
+
+        self.move_pieces( from_place, to_place)
 
     def move_pieces(self, actual_position, next_position):
         next_position["text"] = actual_position["text"]
@@ -123,27 +141,12 @@ class Application:
         time.sleep(1)
         print("conectando ao servidor")
         HOST = 'localhost'    #endereco IP do servidor OBRIGATORIO
-        PORT = 12343
+        PORT = 12341
         socketCliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         enderecoServidor = (HOST, PORT)
         socketCliente.connect(enderecoServidor)
         
         return socketCliente
-        print("servidor conectado!!")
-
-        print ('Digite X para sair')
-        nome = input('Digite seu nome : ').encode()
-        mensagem = nome
-        socketCliente.send(nome)
-
-        while mensagem != b'X' :
-            # recebe o tabuleiro
-            mensagemRecebida = socketCliente.recv(105)
-            print('Mensagem Recebida = \n', mensagemRecebida.decode())
-            mensagem = input('Entre com sua jogada : ')
-            socketCliente.send("{}".format(mensagem).encode())
-            mensagemRecebida = socketCliente.recv(105)
-        socketCliente.close()
 
 
     # self.button_one.pack()
