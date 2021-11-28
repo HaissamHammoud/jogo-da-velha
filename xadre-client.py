@@ -32,34 +32,56 @@ class Application:
         self.frame = tk.Frame(master)
         self.frame.pack()
         self.YOUR_COLLOR = "white"
-
+        self.your_turn = True
         self.buttons = []
+        self.connection = self.connect_to_server() 
+        self.build_board()
+        self.put_pieces()
+
+    def build_board(self):
         for i in range(8):
             self.buttons.append([])
             self.color = "gray" if self.color == "white" else "white"
             for j in range(8):
-                self.buttons[i].append(tk.Button(self.frame, fg = "black", width = 3, height = 3, bd = 0, bg = self.get_collor(), cursor = "hand2", name=(str(i)+(str(j)))))
-                self.buttons[i][j]["command"] = lambda pl = player, ab = self.buttons[i][j]: self.press_button(pl,ab)
+                self.buttons[i].append(tk.Button(self.frame, 
+                    fg = "black", 
+                    width = 3,
+                    height = 3, 
+                    bd = 0, 
+                    bg = self.get_collor(), 
+                    cursor = "hand2", name=(str(i)+(str(j)))))
+                self.buttons[i][j]["command"] = lambda pl = player, ab = self.buttons[i][j]: self.press_button(pl,ab, self.connection)
                 self.buttons[i][j]["text"] = ""#str(i+j)
                 self.buttons[i][j].grid(row = i, column = j)
-                
-        self.put_pieces()
 
-    def press_button(self, player, actual_button):
-        row = actual_button.grid_info()["row"]
-        column = actual_button.grid_info()["column"]
+    def press_button(self, player, actual_button,connection):
+        if not self.your_turn:
+            return
+
+        from_row = str(actual_button.grid_info()["row"])
+        from_column = str(actual_button.grid_info()["column"])
         if self.SELECTED_PIECE["text"] == "" and actual_button["text"] in PECAS_BRANCAS :
             self.SELECTED_PIECE = actual_button
             return
-        if self.SELECTED_PIECE["text"] != "" and actual_button != "" :
+
+        if self.SELECTED_PIECE["text"] != "" and actual_button != "" and actual_button["text"] not in PECAS_BRANCAS:
+            to_row = str(self.SELECTED_PIECE.grid_info()["row"])
+            to_column = str(self.SELECTED_PIECE.grid_info()["column"])
+            #SEND RESPONSE
+            #GET RESPONSE
+            #IF RESPONDE TRUE THAN ...
+            #IF NOT UNDONE THE MOVEMENT OR CLEAR THE PIECE
+            print(connection)
+            print(from_row+from_column+","+to_row+to_column)
+            connection.send((from_row+from_column+","+to_row+to_column).encode())
             actual_button["text"] = self.SELECTED_PIECE["text"]
             self.SELECTED_PIECE["text"] = ""
+            # self.your_turn = not(self.your_turn)
             return   
 
     def move_pieces(self, actual_position, next_position):
         next_position["text"] = actual_position["text"]
         actual_position["text"] = ""
-
 
     def put_pieces(self):
         traz_preto = [TORRE_PRETA,BISPO_PRETO,CAVALO_PRETO,REI_PRETO,DAMA_PRETA,CAVALO_PRETO,BISPO_PRETO,TORRE_PRETA]
@@ -85,7 +107,6 @@ class Application:
             self.buttons[6][i]["text"] = PEAO_BRANCO
             print(f"{self.buttons[1][i]}")
 
-
     def get_collor(self):
         if self.color == "gray":
             self.color = "white"
@@ -94,20 +115,23 @@ class Application:
             self.color = "gray"
             return self.color
 
-    def connect_to_server():
+    def connect_to_server(self):
         time.sleep(1)
         print("conectando ao servidor")
-        HOST = '192.168.0.1'    #endereco IP do servidor OBRIGATORIO
+        HOST = 'localhost'    #endereco IP do servidor OBRIGATORIO
         PORT = 12343
         socketCliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         enderecoServidor = (HOST, PORT)
         socketCliente.connect(enderecoServidor)
+        
+        return socketCliente
         print("servidor conectado!!")
 
         print ('Digite X para sair')
         nome = input('Digite seu nome : ').encode()
         mensagem = nome
         socketCliente.send(nome)
+
         while mensagem != b'X' :
             # recebe o tabuleiro
             mensagemRecebida = socketCliente.recv(105)

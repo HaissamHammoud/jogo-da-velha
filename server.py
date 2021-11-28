@@ -43,29 +43,30 @@ socketServidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 enderecoServidor = (HOST,PORT)
 socketServidor.bind(enderecoServidor)
 socketServidor.listen(1)
+print("esperando")
 while True :
     socketCliente, enderecoCliente = socketServidor.accept()
     socketServidor.close()
     print('Cliente conectado => ', enderecoCliente)
-    nome = socketCliente.recv(100)
     mensagemEnviada = 'Conectado com sucesso'
     tabuleiro = [[0,0,0],[0,0,0],[0,0,0]]
     while True :
         print(len(printTabuleiro(tabuleiro)))
         while True:
-            socketCliente.send(printTabuleiro(tabuleiro).encode())
-            mensagem = socketCliente.recv(2)
+            # socketCliente.send(printTabuleiro(tabuleiro).encode())
+            mensagem = socketCliente.recv(5)
+            # print(mensagem.decode())
             resposta = Jogar(tabuleiro, mensagem, 2)
-            socketCliente.send(printTabuleiro(tabuleiro).encode())
-            print(printTabuleiro(tabuleiro))
+            # socketCliente.send(printTabuleiro(tabuleiro).encode())
+            # print(printTabuleiro(tabuleiro))
             if resposta != -1:
-                break 
+                continue 
         while True:
             ComandoJogador = input('Entre com sua jogada : ')
             resposta = Jogar(tabuleiro, ComandoJogador.encode(), 1)
             print(printTabuleiro(tabuleiro))
             if resposta != -1:
-                break 
+                continue 
 
     print('Conexao finalizada com o cliente  ' , enderecoCliente)
     socketCliente.close()
