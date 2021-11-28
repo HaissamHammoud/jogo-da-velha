@@ -37,6 +37,9 @@ def Jogar(tabuleiro, comando, jogador):
     
     return 1
 
+def movement_is_valid():
+    return True
+
 HOST = ''           #endereco de IP é o da máquina atual
 PORT = 12343
 socketServidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -53,20 +56,28 @@ while True :
     while True :
         print(len(printTabuleiro(tabuleiro)))
         while True:
+            print("vez do branco")
             # socketCliente.send(printTabuleiro(tabuleiro).encode())
             mensagem = socketCliente.recv(5)
-            # print(mensagem.decode())
+            print(mensagem.decode())
+            if movement_is_valid():
+                socketCliente.send("ok".encode())  
+                break
+            else:
+                socketCliente.send("no".encode())
             resposta = Jogar(tabuleiro, mensagem, 2)
             # socketCliente.send(printTabuleiro(tabuleiro).encode())
             # print(printTabuleiro(tabuleiro))
-            if resposta != -1:
+            if mensagem != -1:
                 continue 
         while True:
+            print("vez do preto")
             ComandoJogador = input('Entre com sua jogada : ')
+            mensagem = socketCliente.recv(5)
             resposta = Jogar(tabuleiro, ComandoJogador.encode(), 1)
             print(printTabuleiro(tabuleiro))
             if resposta != -1:
-                continue 
+                break 
 
     print('Conexao finalizada com o cliente  ' , enderecoCliente)
     socketCliente.close()

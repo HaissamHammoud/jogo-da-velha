@@ -74,8 +74,12 @@ class Application:
             print(connection)
             print(from_row+from_column+","+to_row+to_column)
             connection.send((from_row+from_column+","+to_row+to_column).encode())
-            actual_button["text"] = self.SELECTED_PIECE["text"]
-            self.SELECTED_PIECE["text"] = ""
+            recieve = connection.recv(2)
+            if recieve.decode() == "ok":
+                actual_button["text"] = self.SELECTED_PIECE["text"]
+                self.SELECTED_PIECE["text"] = ""
+            else:
+                print("invalid movement")
             # self.your_turn = not(self.your_turn)
             return   
 
