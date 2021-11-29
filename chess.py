@@ -280,7 +280,9 @@ def turn(matrix: 'list[list[int]]', myPieces: 'list[int]', opponentPieces: 'list
         )
         if message != True:
           return matrix, str(message), False
-        opponentPieces.remove(matrix[sourceRow][sourceCollumn])
+        dead = matrix[destinationRow][destinationCollumn]
+        if dead != 0:
+          opponentPieces.remove(matrix[sourceRow][sourceCollumn])
         matrix[sourceRow][sourceCollumn] = 0
         matrix[destinationRow][destinationCollumn] = piece
         
